@@ -6,6 +6,7 @@ int main()
 {
 	Game game;
 	game.start_game();
+	//game.test();
 
 	return 0;
 }

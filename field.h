@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const unsigned int coord_y_scr = 3;
+const unsigned int coord_y_scr = 2;
 const unsigned int coord_x_scr = 25;
 const int start_y_obj = 1;
 const int start_x_obj = 10;
@@ -32,16 +32,14 @@ public:
 	void key_left(WINDOW*);
 	void key_right(WINDOW*);
 	void key_up(WINDOW*);
-	void key_down(WINDOW*);
+	int key_down(WINDOW*);
 
 	void print_obj(WINDOW*);
 	void print_del_obj(WINDOW*);
-	void print_info(int);
 	void print_field(WINDOW* win);
 	void print_window_matr();
 
 	void get_figure();
-
 
 };
 
@@ -73,37 +71,6 @@ Field::Field()
 	field[x_obj][y_obj] = '$';
 }
 
-int Field::check_x_right()
-{
-	if (x_obj == line - 2)
-		return x_obj;
-	//field[x_obj][y_obj] = ' ';
-	//field[x_obj + 1][y_obj] = '$';
-	return x_obj + 1;
-}
-
-int Field::check_x_left()
-{
-	if (x_obj == 1)
-		return x_obj;
-	//field[x_obj][y_obj] = ' ';
-	//field[x_obj - 1][y_obj] = '$';
-	return x_obj - 1;
-}
-
-int Field::check_y_down(WINDOW* win)
-{
-	if (y_obj == line - 2 && field[x_obj][y_obj + 1] != ' ') {
-		field[start_x_obj][start_y_obj] = ' ';
-		field[x_obj][y_obj] = '$';
-		y_obj = start_y_obj;
-		x_obj = start_x_obj;
-		print_field(win);
-		return y_obj;
-	}
-	return y_obj + 1;
-}
-
 int Field::get_line_win() {return line;}
 
 int Field::get_column_win() {return column;}
@@ -113,28 +80,70 @@ int Field::get_index(int num_fig)
 	return num_fig * 7 + num_fig;
 }
 
-void Field::key_left(WINDOW* win)
-{
-	print_del_obj(win);
-	x_obj = check_x_left();
-}
-
 void Field::key_right(WINDOW* win)
 {
 	print_del_obj(win);
-	x_obj = check_x_right();
+	if (!check_x_right())
+		x_obj++;
+}
+
+int Field::check_x_right()
+{
+	if (field[x_obj + 1][y_obj] != ' ')
+		return 1;
+	return 0;
+}
+
+void Field::key_left(WINDOW* win)
+{
+	print_del_obj(win);
+	if (!check_x_left())
+		x_obj--;
+}
+
+int Field::check_x_left()
+{
+	if (field[x_obj - 1][y_obj] != ' ')
+		return 1;
+	return 0;
+}
+
+int Field::key_down(WINDOW* win)
+{
+	print_del_obj(win);
+	mvprintw(0, 25, "y_obj:%d x_obj%d", y_obj, x_obj);
+	mvprintw(1, 25, "%c", field[x_obj][y_obj - 2]);
+	if (!check_y_down(win)) {
+		//mvprintw(0, 25, "         ");
+		y_obj++;
+		return 0;
+	} else {
+		mvprintw(0, 0, "Game_over");
+		return 1;
+	}
+
+	return 0;
+}
+
+int Field::check_y_down(WINDOW* win)
+{
+	if (field[x_obj][y_obj - 2] == '#' && field[x_obj][y_obj + 1] == '$') {
+		mvwprintw(win, 1, 1, "Game_over");
+		return 1;
+	} else if (field[x_obj][y_obj + 1] != ' ') {
+		field[start_x_obj][start_y_obj] = ' ';
+		field[x_obj][y_obj] = '$';
+		y_obj = start_y_obj;
+		x_obj = start_x_obj;
+		print_field(win);
+	}
+	return 0;
 }
 
 void Field::key_up(WINDOW* win)
 {
 	print_del_obj(win);
 	y_obj--;
-}
-
-void Field::key_down(WINDOW* win)
-{
-	print_del_obj(win);
-	y_obj = check_y_down(win);
 }
 
 void Field::print_obj(WINDOW* win)
@@ -147,11 +156,6 @@ void Field::print_del_obj(WINDOW* win)
 	mvwprintw(win, y_obj, x_obj, " ");
 }
 
-void Field::print_info(int key)
-{
-	mvprintw(0, 0, "Key: %c %d", key, key);
-	mvprintw(1, 0, "y, x: %d %d", y_obj, x_obj);
-}
 /*
 void Field::get_figure()
 {
@@ -176,7 +180,7 @@ void Field::print_field(WINDOW* win)
 	{
 		for (unsigned int j = 1; j < column - 1; j++)
 		{
-			mvprintw(j + y_matr, i + x_matr, "%c ", field[i][j]);
+			mvprintw(j + y_matr, i + x_matr, "%c", field[i][j]);
 			test = field[i][j];
 			mvwprintw(win, j, i, &test[0]);
 		}
