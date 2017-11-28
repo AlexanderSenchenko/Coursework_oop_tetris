@@ -28,7 +28,7 @@ public:
 Game::Game()
 {
 	initscr();
-	//curs_set(0);
+	curs_set(0);
 	cbreak();
 	keypad(stdscr, true);
 	noecho();

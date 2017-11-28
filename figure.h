@@ -15,8 +15,8 @@ class Figure
 		1, 0, 0, 0, 0, 1, 0, 2,
 		0, 0, 1, 0, 1, 1, 1, 2,
 		0, 0, 1, 0, 1, 1, 2, 0,
-		0, 0, 0, 1, 1, 1, 1, 2,
-		0, 2, 1, 1, 0, 1, 1, 0,
+		0, 0, -1, 0, -1, 1, -2, 1,
+		0, 0, 1, 0, 1, 1, 2, 1,
 		0, 0, 1, 0, 0, 1, 1, 1
 	};
 	struct point
@@ -42,7 +42,8 @@ public:
 
 void Figure::get_figure(WINDOW *win)
 {
-	int num = get_index(0);
+	srand(time(0));
+	int num = get_index(rand() % 7);
 
 	for (int i = 0; i < 4; i++, num += 2)
 	{
