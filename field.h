@@ -85,8 +85,13 @@ void Field::key_right(WINDOW* win)
 
 int Field::check_x_right()
 {
-	if (field[x_obj + 1][y_obj] != ' ')
-		return 1;
+	for (int i = 0; i < 4; i++)
+	{
+		int y = figure.get_y(i);
+		int x = figure.get_x(i);
+		if (field[x + 1][y] != ' ')
+			return 1;
+	}
 	return 0;
 }
 
@@ -100,8 +105,13 @@ void Field::key_left(WINDOW* win)
 
 int Field::check_x_left()
 {
-	if (field[x_obj - 1][y_obj] != ' ')
-		return 1;
+	for (int i = 0; i < 4; i++)
+	{
+		int y = figure.get_y(i);
+		int x = figure.get_x(i);
+		if (field[x - 1][y] != ' ')
+			return 1;
+	}
 	return 0;
 }
 
@@ -116,8 +126,16 @@ int Field::move_down(WINDOW* win)
 		figure.move_y(win, 1);
 		//return 0;
 	} else if (w == 2) {
+		//print_new_obj(win);
+		for (int i = 0; i < 4; i++)
+		{
+			int x = figure.get_x(i);
+			int y = figure.get_y(i);
+			field[x][y] = '$';
+			//y_obj = start_y_obj;
+			//x_obj = start_x_obj;
+		}
 		print_new_obj(win);
-		
 		print_field(win);
 	} else {
 		return 1;
@@ -140,7 +158,8 @@ int Field::check_y_down(WINDOW* win)
 	for (int i = 0; i < 4; i++)
 	{
 		int y = figure.get_y(i);
-		if (field[x_obj][y + 1] != ' ') {
+		int x = figure.get_x(i);
+		if (field[x][y + 1] != ' ') {
 			return 2;
 		}
 	}

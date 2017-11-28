@@ -37,13 +37,13 @@ public:
 	int check_border_y(int);
 
 	int get_y(int);
+	int get_x(int);
 };
 
 void Figure::get_figure(WINDOW *win)
 {
-	int num = 0;
+	int num = get_index(0);
 
-	num = get_index(0);
 	for (int i = 0; i < 4; i++, num += 2)
 	{
 		p[i].x = obj[num] + 10;
@@ -101,6 +101,11 @@ int Figure::check_border_y(int num_point)
 int Figure::get_y(int num_point)
 {
 	return p[num_point].y;
+}
+
+int Figure::get_x(int num_point)
+{
+	return p[num_point].x;
 }
 
 #endif
