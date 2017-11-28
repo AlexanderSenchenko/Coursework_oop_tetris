@@ -62,11 +62,12 @@ void Game::start_game()
 	while ((key = getch()) != 27) {
 		if ((clock() - time_down) >= (float)time) {
 			time_down = clock();
-			if (field.move_down(win)) {
+			/*if ((field.move_down(win)) == 1) {
 				mvwprintw(win, field.get_column_win() / 2, 6, "Game over");
 				render_window();
 				return;
-			}
+			}*/
+			field.move_down(win);
 		}
 
 		if (key_processing(key))
@@ -100,7 +101,7 @@ void Game::test()
 {
 	while((key = getch()) != 27) {
 		mvprintw(0, 0, "Input Esc for exit");
-		render_window();
+		wrefresh(win);
 	}
 }
 
