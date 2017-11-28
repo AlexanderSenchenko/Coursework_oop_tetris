@@ -6,7 +6,7 @@ int main()
 {
 	Game game;
 	game.start_game();
-	//game.test();
+	game.test();
 
 	return 0;
 }

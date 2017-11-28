@@ -1,7 +1,7 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include "field.h"
+#include "figure.h"
 #include <string>
 
 using namespace std;
@@ -18,9 +18,9 @@ class Field
 	int y_obj;
 	int x_obj;
 	char field[line][column];
+	Figure figure;
 public:
 	Field();
-	//~Field();
 	int check_x_left();
 	int check_x_right();
 	int check_y_down(WINDOW*);
@@ -32,12 +32,12 @@ public:
 	void key_left(WINDOW*);
 	void key_right(WINDOW*);
 	void key_up(WINDOW*);
-	int key_down(WINDOW*);
+	int move_down(WINDOW*);
 
 	void print_obj(WINDOW*);
 	void print_del_obj(WINDOW*);
 	void print_field(WINDOW* win);
-	void print_window_matr();
+	void print_new_obj(WINDOW*);
 
 	void get_figure();
 
@@ -75,16 +75,12 @@ int Field::get_line_win() {return line;}
 
 int Field::get_column_win() {return column;}
 
-int Field::get_index(int num_fig)
-{
-	return num_fig * 7 + num_fig;
-}
-
 void Field::key_right(WINDOW* win)
 {
 	print_del_obj(win);
 	if (!check_x_right())
-		x_obj++;
+		figure.move_x(win, 1);
+		//x_obj++;
 }
 
 int Field::check_x_right()
@@ -98,7 +94,8 @@ void Field::key_left(WINDOW* win)
 {
 	print_del_obj(win);
 	if (!check_x_left())
-		x_obj--;
+		figure.move_x(win, -1);
+		//x_obj--;
 }
 
 int Field::check_x_left()
@@ -108,17 +105,21 @@ int Field::check_x_left()
 	return 0;
 }
 
-int Field::key_down(WINDOW* win)
+int Field::move_down(WINDOW* win)
 {
+	int w;
 	print_del_obj(win);
 	mvprintw(0, 25, "y_obj:%d x_obj%d", y_obj, x_obj);
 	mvprintw(1, 25, "%c", field[x_obj][y_obj - 2]);
-	if (!check_y_down(win)) {
-		//mvprintw(0, 25, "         ");
-		y_obj++;
-		return 0;
+	if ((w = check_y_down(win)) == 0) {
+		//y_obj++;
+		figure.move_y(win, 1);
+		//return 0;
+	} else if (w == 2) {
+		print_new_obj(win);
+		
+		print_field(win);
 	} else {
-		mvprintw(0, 0, "Game_over");
 		return 1;
 	}
 
@@ -127,8 +128,7 @@ int Field::key_down(WINDOW* win)
 
 int Field::check_y_down(WINDOW* win)
 {
-	if (field[x_obj][y_obj - 2] == '#' && field[x_obj][y_obj + 1] == '$') {
-		mvwprintw(win, 1, 1, "Game_over");
+	/*if (field[x_obj][y_obj - 2] == '#' && field[x_obj][y_obj + 1] == '$') {
 		return 1;
 	} else if (field[x_obj][y_obj + 1] != ' ') {
 		field[start_x_obj][start_y_obj] = ' ';
@@ -136,7 +136,15 @@ int Field::check_y_down(WINDOW* win)
 		y_obj = start_y_obj;
 		x_obj = start_x_obj;
 		print_field(win);
+	}*/
+	for (int i = 0; i < 4; i++)
+	{
+		int y = figure.get_y(i);
+		if (field[x_obj][y + 1] != ' ') {
+			return 2;
+		}
 	}
+	//figure.check_border_y();
 	return 0;
 }
 
@@ -145,32 +153,6 @@ void Field::key_up(WINDOW* win)
 	print_del_obj(win);
 	y_obj--;
 }
-
-void Field::print_obj(WINDOW* win)
-{
-	mvwprintw(win, y_obj, x_obj, "$");
-}
-
-void Field::print_del_obj(WINDOW* win)
-{
-	mvwprintw(win, y_obj, x_obj, " ");
-}
-
-/*
-void Field::get_figure()
-{
-	int *obj = figure.get_obj(), num = 0, x, y;
-
-	num = get_index(0);
-	for (int i = 0; i < 4; i++, num += 2)
-	{
-		x = obj[num] + 1;
-		y = obj[num + 1] + 10;
-		arr_point[i].set_point(x, y);
-		field[x][y] = '$';
-	}
-	//print_field();
-}*/
 
 void Field::print_field(WINDOW* win)
 {
@@ -185,6 +167,27 @@ void Field::print_field(WINDOW* win)
 			mvwprintw(win, j, i, &test[0]);
 		}
 	}
+}
+
+void Field::print_obj(WINDOW* win)
+{
+	//mvwprintw(win, y_obj, x_obj, "$");
+	//figure.get_figure(win);
+	figure.print_figure(win);
+}
+
+void Field::print_new_obj(WINDOW* win)
+{
+	//mvwprintw(win, y_obj, x_obj, "$");
+	figure.get_figure(win);
+	//figure.print_figure(win);
+}
+
+void Field::print_del_obj(WINDOW* win)
+{
+	//mvwprintw(win, y_obj, x_obj, " ");
+	//field[x_obj][y_obj] = ' ';
+	figure.delete_fig(win);
 }
 
 #endif
