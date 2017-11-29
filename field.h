@@ -2,7 +2,7 @@
 #define FIELD_H
 
 #include "figure.h"
-#include <string>
+//#include <string>
 
 using namespace std;
 
@@ -35,15 +35,18 @@ public:
 	int move_down(WINDOW*);
 	int check_down(WINDOW*);
 
+	void rotate(WINDOW*);
+
 	void check_all_line_matrix();
 	int check_line(int);
-	int swap_line(int);
 	void delete_line(int);
+	void swap_all_line(int);
+	int swap_line(int);
 	void swap_elem(int, int);
 
 	void print_obj(WINDOW*);
 	void print_del_obj(WINDOW*);
-	void print_field(WINDOW* win);
+	void print_field(WINDOW*);
 	int print_new_obj(WINDOW*);
 };
 
@@ -157,6 +160,37 @@ int Field::check_down(WINDOW* win)
 	return 0;
 }
 
+/*void Field::rotate(WINDOW* win)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		
+	}
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Field::check_all_line_matrix()
 {
 	for (int i = 20; i > 0; i--)
@@ -175,8 +209,16 @@ int Field::check_line(int y_line)
 			return 0;
 	}
 	delete_line(y_line);
-	swap_line(y_line);
+	swap_all_line(y_line);
 	return 1;
+}
+
+void Field::swap_all_line(int y_line)
+{
+	for (int y_str = y_line; y_str > 0; y_str--) {
+		swap_line(y_str);
+	}
+	return;
 }
 
 int Field::swap_line(int y_line)
@@ -204,18 +246,6 @@ void Field::swap_elem(int y_line, int x_column)
 	field[y_line - 1][x_column] = a;
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Field::print_field(WINDOW* win)
 {

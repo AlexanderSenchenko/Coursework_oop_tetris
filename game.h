@@ -1,9 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
+// /#include <iostream>
 #include <ncurses.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <ctime> 
 #include "field.h"
 
@@ -19,10 +19,9 @@ public:
 	Game();
 	~Game();
 	void start_game();
-	void test();
 	void render_window();
 	int key_processing(int);
-	double wtime();
+	void test();
 };
 
 Game::Game()
@@ -37,7 +36,6 @@ Game::Game()
 	win = newwin(field.get_line_win(), field.get_column_win(), coord_y_scr, coord_x_scr);
 	refresh();
 	field.print_field(win);
-	//render_window();
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 	field.print_new_obj(win);
 	wrefresh(win);
@@ -67,7 +65,6 @@ void Game::start_game()
 				render_window();
 				return;
 			}
-			//field.move_down(win);
 		}
 
 		if (key_processing(key))
@@ -82,6 +79,7 @@ int Game::key_processing(int key)
 	switch(key)
 	{
 		case KEY_UP:
+			//field.rotate(win);
 			break;
 		case KEY_DOWN:
 			return 1;
