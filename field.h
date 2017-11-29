@@ -8,6 +8,7 @@ using namespace std;
 
 const int coord_y_scr = 2;
 const int coord_x_scr = 25;
+
 const int start_y_obj = 1;
 const int start_x_obj = 10;
 
@@ -16,7 +17,8 @@ class Field
 	static const int line = 22;
 	static const int column = 22;
 	int y_obj;
-	int x_obj;	char field[line][column];
+	int x_obj;
+	char field[line][column];
 	Figure figure;
 public:
 	Field();
@@ -43,7 +45,7 @@ public:
 	void print_obj(WINDOW*);
 	void print_del_obj(WINDOW*);
 	void print_field(WINDOW* win);
-	void print_new_obj(WINDOW*);
+	int print_new_obj(WINDOW*);
 };
 
 Field::Field()
@@ -142,7 +144,8 @@ int Field::move_down(WINDOW* win)
 			//x_obj = start_x_obj;
 		}
 		check_all_line_matrix();
-		print_new_obj(win);
+		if (print_new_obj(win))
+			return 1;
 		print_field(win);
 	}
 
@@ -195,6 +198,16 @@ void Field::check_all_line_matrix()
 			}
 		}
 	}
+
+	/*for (int i = start_x_obj - 1; i < start_x_obj + 2; i++) {
+		for (int j = start_y_obj; j < start_y_obj + 3; j++)
+		{
+			move(0, 50);
+			printw("%c", field[i][j]);
+			//test = field[i][j];
+			//mvwaddch(win, j, i, field[i][j]);	
+		}
+	}*/
 	return;
 }
 
@@ -248,11 +261,11 @@ void Field::key_up(WINDOW* win)
 
 void Field::print_field(WINDOW* win)
 {
-	unsigned int y_matr = coord_y_scr, x_matr = 0;
+	int y_matr = coord_y_scr, x_matr = 0;
 	//string test;
-	for (unsigned int i = 1; i < line - 1; i++)
+	for (int i = 1; i < line - 1; i++)
 	{
-		for (unsigned int j = 1; j < column - 1; j++)
+		for (int j = 1; j < column - 1; j++)
 		{
 			move(j + y_matr, i + x_matr);
 			printw("%c", field[i][j]);
@@ -269,10 +282,18 @@ void Field::print_obj(WINDOW* win)
 	figure.print_figure(win);
 }
 
-void Field::print_new_obj(WINDOW* win)
+int Field::print_new_obj(WINDOW* win)
 {
 	//mvwprintw(win, y_obj, x_obj, "$");
 	figure.get_figure(win);
+	for (int i = 0; i < 4; i++) {
+		int y = figure.get_y(i);
+		int x = figure.get_x(i);
+		if (field[x][y] != ' ') {
+			return 1;
+		}
+	}
+	return 0;
 	//figure.print_figure(win);
 }
 

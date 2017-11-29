@@ -62,12 +62,12 @@ void Game::start_game()
 	while ((key = getch()) != 27) {
 		if ((clock() - time_down) >= (float)time) {
 			time_down = clock();
-			/*if ((field.move_down(win)) == 1) {
+			if (field.move_down(win)) {
 				mvwprintw(win, field.get_column_win() / 2, 6, "Game over");
 				render_window();
 				return;
-			}*/
-			field.move_down(win);
+			}
+			//field.move_down(win);
 		}
 
 		if (key_processing(key))
