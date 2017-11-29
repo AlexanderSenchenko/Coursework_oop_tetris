@@ -9,10 +9,14 @@ class Game
 	Field field;
 	int key;
 	WINDOW *win;
-	static const int time = 200000;
+	int time;
 public:
 	Game();
+	Game(int);
+	Game(const char*);
+	Game(int, const char*);
 	~Game();
+	void init_option();
 	void start_game();
 	void render_window();
 	int key_processing(int);
@@ -21,6 +25,48 @@ public:
 
 Game::Game()
 {
+	init_option();
+	time = 200000;
+	move(1, 25);
+	addstr("Hello stranger");
+}
+
+Game::Game(int user_time)
+{
+	init_option();
+	time = user_time;
+	move(1, 25);
+	addstr("Hello stranger");
+}
+
+Game::Game(const char* name)
+{
+	init_option();
+	time = 200000;
+	move(1, 25);
+	printw("Hello");
+	move(1, 31);
+	addstr(name);
+}
+
+Game::Game(int user_time, const char* name)
+{
+	init_option();
+	time = user_time;
+	move(1, 25);
+	printw("Hello");
+	move(1, 31);
+	addstr(name);
+}
+
+Game::~Game()
+{
+	delwin(win);
+	endwin();
+}
+
+void Game::init_option()
+{
 	initscr();
 	curs_set(0);
 	cbreak();
@@ -28,18 +74,12 @@ Game::Game()
 	noecho();
 	nodelay(stdscr, true);
 
-	win = newwin(field.get_line_win(), field.get_column_win(), coord_y_scr, coord_x_scr);
+	win = newwin(field.get_line_win(), field.get_column_win(), field.get_coord_y_scr(), field.get_coord_x_scr());
 	refresh();
 	field.print_field(win);
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 	field.print_new_obj(win);
 	wrefresh(win);
-}
-
-Game::~Game()
-{
-	delwin(win);
-	endwin();
 }
 
 void Game::render_window()

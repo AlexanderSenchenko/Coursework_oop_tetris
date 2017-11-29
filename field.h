@@ -3,18 +3,16 @@
 
 #include "figure.h"
 
-const int coord_y_scr = 0;
-const int coord_x_scr = 0;
 
-const int start_y_obj = 1;
-const int start_x_obj = 10;
 
 class Field
 {
 	static const int line = 22;
 	static const int column = 22;
-	//int y_obj;
-	//int x_obj;
+	static const int start_y_obj = 1;
+	static const int start_x_obj = 10;
+	static const int coord_y_scr = 1;
+	static const int coord_x_scr = 0;
 	char field[line][column];
 	Figure figure;
 public:
@@ -22,6 +20,8 @@ public:
 
 	int get_line_win();
 	int get_column_win();
+	int get_coord_y_scr();
+	int get_coord_x_scr();
 
 	void move_x(WINDOW*, int);
 	int check_move_x(int);
@@ -44,9 +44,6 @@ public:
 
 Field::Field()
 {
-	//y_obj = start_y_obj;
-	//x_obj = start_x_obj;
-
 	for (int i = 0; i < line; i++)
 	{
 		if (i == 0 || i == line - 1) {
@@ -69,8 +66,9 @@ Field::Field()
 }
 
 int Field::get_line_win() {return line;}
-
 int Field::get_column_win() {return column;}
+int Field::get_coord_x_scr() {return coord_x_scr;}
+int Field::get_coord_y_scr() {return coord_y_scr;}
 
 void Field::move_x(WINDOW* win, int ind)
 {
@@ -95,9 +93,6 @@ int Field::check_move_x(int ind)
 int Field::move_down(WINDOW* win)
 {
 	print_del_obj(win);
-
-	//move(0, 25);
-	//printw("y_obj:%d x_obj%d", y_obj, x_obj);
 
 	if (!check_down(win)) {
 		figure.move_y(win, 1);

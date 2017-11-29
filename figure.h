@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class Figure
+class Figure: public Point
 {
 	int obj[7][4][4][2] =
 	{
@@ -54,11 +54,6 @@ class Figure
 			{{0, 0}, {1, 0}, {0, 1}, {1, 1}}
 		}//O!
 	};
-	struct point
-	{
-		int x;
-		int y;
-	} p[4];
 public:
 	void get_new_figure(WINDOW*);
 

@@ -1,10 +1,11 @@
 #include "game.h"
+#include <iostream>
 
 using namespace std;
 
 int main()
 {
-	Game game;
+	Game game = {200000, "Name"};
 	game.start_game();
 	game.end();
 
