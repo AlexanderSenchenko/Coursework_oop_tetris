@@ -40,8 +40,8 @@ public:
 
 void Figure::get_figure(WINDOW *win)
 {
-	srand(time(0));
-	int num = get_index(rand() % 7);
+	//srand(time(0));
+	int num = get_index(6);//get_index(rand() % 7);
 
 	for (int i = 0; i < 4; i++, num += 2)
 	{

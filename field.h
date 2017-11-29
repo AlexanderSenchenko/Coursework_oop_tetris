@@ -38,6 +38,7 @@ public:
 	int check_down(WINDOW*);
 
 	void check_all_line_matrix();
+	int check_line(int);
 	int swap_line(int);
 	void delete_line(int);
 	void swap_elem(int, int);
@@ -94,7 +95,7 @@ int Field::check_left()
 	{
 		int y = figure.get_y(i);
 		int x = figure.get_x(i);
-		if (field[x - 1][y] != ' ')
+		if (field[y][x - 1] != ' ')
 			return 1;
 	}
 	return 0;
@@ -114,7 +115,7 @@ int Field::check_right()
 	{
 		int y = figure.get_y(i);
 		int x = figure.get_x(i);
-		if (field[x + 1][y] != ' ')
+		if (field[y][x + 1] != ' ')
 			return 1;
 	}
 	return 0;
@@ -126,8 +127,8 @@ int Field::move_down(WINDOW* win)
 
 	move(0, 25);
 	printw("y_obj:%d x_obj%d", y_obj, x_obj);
-	move(1, 25);
-	printw("%c", field[x_obj][y_obj - 2]);
+	//move(1, 25);
+	//printw("%c", field[x_obj][y_obj - 2]);
 
 	if (!check_down(win)) {
 		//y_obj++;
@@ -139,11 +140,12 @@ int Field::move_down(WINDOW* win)
 		{
 			int x = figure.get_x(i);
 			int y = figure.get_y(i);
-			field[x][y] = '$';
+			field[y][x] = '$';
 			//y_obj = start_y_obj;
 			//x_obj = start_x_obj;
 		}
-		check_all_line_matrix();
+		//check_all_line_matrix();
+		delete_line(20);
 		if (print_new_obj(win))
 			return 1;
 		print_field(win);
@@ -167,7 +169,7 @@ int Field::check_down(WINDOW* win)
 	{
 		int y = figure.get_y(i);
 		int x = figure.get_x(i);
-		if (field[x][y + 1] != ' ') {
+		if (field[y + 1][x] != ' ') {
 			return 1;
 		} /*else if (field[x][y] == '$') {
 			return 1;
@@ -179,65 +181,78 @@ int Field::check_down(WINDOW* win)
 
 void Field::check_all_line_matrix()
 {
-	for (int i = line - 1; i > 0; i--)
+	int check = 0;
+	for (int i = 20; i > 0; i--)
 	{
-		move(1, 10);
-		printw("Test %d", i);
-		int check = 0;
-		for (int j = 0; j < column - 1; j++)
+		//move(1, 10);
+		//printw("Test %d", i);
+		//delete_line(i);
+		for (int j = 1; j < column - 1; j++)
 		{
-			move(2, 10);
-			printw("Test %d", j);
-			if (field[i][j] == ' '/*j == column - 2*/) {
+			//delete_line(i);
+			//move(2, 10);
+			//printw("Test %d", j);
+			/*if (field[i][j] == ' 'j == column - 2) {
+				//delete_line(i);
 				//swap_line(i);
 				//j = column - 1;
 				//i++;
-				check++;
-				move(0, 10);
-				printw("Test %d", check);
+				check = 1;
+				//move(0, 10);
+				//printw("Test %d", check);
 			}
+			*/
+			// /check_line(i);
 		}
+		move(1, 25);
+		printw("Check %d", check);
+		//if (check == 1) {
+		//	delete_line(i);
+			//swap_line(i);
+			//i--;
+		//}
+		check = 0;
 	}
+	//delete_line(20);
 
-	/*for (int i = start_x_obj - 1; i < start_x_obj + 2; i++) {
-		for (int j = start_y_obj; j < start_y_obj + 3; j++)
-		{
-			move(0, 50);
-			printw("%c", field[i][j]);
-			//test = field[i][j];
-			//mvwaddch(win, j, i, field[i][j]);	
-		}
-	}*/
 	return;
 }
-
-int Field::swap_line(int i_line)
+/*
+int Field::check_line(int y_line)
 {
-	delete_line(i_line);
-	for (int i = 0; i < column - 1; i++)
+	for (int i = 1; i < 21; i++)
 	{
-		swap_elem(i_line, i);
+
 	}
-	if (i_line != 0) {
-		swap_line(i_line - 1);
+}*/
+
+int Field::swap_line(int y_line)
+{
+	delete_line(y_line);
+	for (int i = 1; i < column - 1; i++)
+	{
+		swap_elem(i, y_line);
+	}
+	if (y_line != 0) {
+		swap_line(y_line - 1);
 	}
 	return 0;
 }
 
-void Field::delete_line(int i_line)
+void Field::delete_line(int y_line)
 {
-	for (int i = 0; i < column - 1; i++)
+	for (int i = 1; i < column - 1; i++)
 	{
-		field[i_line][i] = ' ';
+		field[y_line][i] = ' ';
 	}
 	return;
 }
 
-void Field::swap_elem(int i_line, int j_column)
+void Field::swap_elem(int x_column, int y_line)
 {
-	char a = field[i_line][j_column];
-	field[i_line][j_column] = field[i_line - 1][j_column];
-	field[i_line - 1][j_column] = a;
+	char a = field[x_column][y_line];
+	field[x_column][y_line] = field[x_column][y_line - 1];
+	field[x_column][y_line - 1] = a;
 	return;
 }
 
@@ -267,10 +282,10 @@ void Field::print_field(WINDOW* win)
 	{
 		for (int j = 1; j < column - 1; j++)
 		{
-			move(j + y_matr, i + x_matr);
+			move(i + y_matr, j + x_matr);
 			printw("%c", field[i][j]);
 			//test = field[i][j];
-			mvwaddch(win, j, i, field[i][j]);
+			mvwaddch(win, i, j, field[i][j]);
 		}
 	}
 }
@@ -289,7 +304,8 @@ int Field::print_new_obj(WINDOW* win)
 	for (int i = 0; i < 4; i++) {
 		int y = figure.get_y(i);
 		int x = figure.get_x(i);
-		if (field[x][y] != ' ') {
+		//проверить координаты на оборот
+		if (field[y][x] != ' ') {
 			return 1;
 		}
 	}
