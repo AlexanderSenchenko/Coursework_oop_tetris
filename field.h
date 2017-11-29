@@ -2,12 +2,9 @@
 #define FIELD_H
 
 #include "figure.h"
-//#include <string>
 
-using namespace std;
-
-const int coord_y_scr = 2;
-const int coord_x_scr = 25;
+const int coord_y_scr = 0;
+const int coord_x_scr = 0;
 
 const int start_y_obj = 1;
 const int start_x_obj = 10;
@@ -16,8 +13,8 @@ class Field
 {
 	static const int line = 22;
 	static const int column = 22;
-	int y_obj;
-	int x_obj;
+	//int y_obj;
+	//int x_obj;
 	char field[line][column];
 	Figure figure;
 public:
@@ -26,16 +23,11 @@ public:
 	int get_line_win();
 	int get_column_win();
 
-	void key_left(WINDOW*);
-	int check_left();
-
-	void key_right(WINDOW*);
-	int check_right();
+	void move_x(WINDOW*, int);
+	int check_move_x(int);
 
 	int move_down(WINDOW*);
 	int check_down(WINDOW*);
-
-	void rotate(WINDOW*);
 
 	void check_all_line_matrix();
 	int check_line(int);
@@ -52,8 +44,8 @@ public:
 
 Field::Field()
 {
-	y_obj = start_y_obj;
-	x_obj = start_x_obj;
+	//y_obj = start_y_obj;
+	//x_obj = start_x_obj;
 
 	for (int i = 0; i < line; i++)
 	{
@@ -80,41 +72,21 @@ int Field::get_line_win() {return line;}
 
 int Field::get_column_win() {return column;}
 
-void Field::key_left(WINDOW* win)
+void Field::move_x(WINDOW* win, int ind)
 {
 	print_del_obj(win);
-	if (!check_left())
-		figure.move_x(win, -1);
+	if (!check_move_x(ind))
+		figure.move_x(win, ind);
 }
 
-int Field::check_left()
+int Field::check_move_x(int ind)
 {
 	int x, y;
 	for (int i = 0; i < 4; i++)
 	{
 		y = figure.get_y(i);
 		x = figure.get_x(i);
-		if (field[y][x - 1] != ' ')
-			return 1;
-	}
-	return 0;
-}
-
-void Field::key_right(WINDOW* win)
-{
-	print_del_obj(win);
-	if (!check_right())
-		figure.move_x(win, 1);
-}
-
-int Field::check_right()
-{
-	int x, y;
-	for (int i = 0; i < 4; i++)
-	{
-		y = figure.get_y(i);
-		x = figure.get_x(i);
-		if (field[y][x + 1] != ' ')
+		if (field[y][x + ind] != ' ')
 			return 1;
 	}
 	return 0;
@@ -124,8 +96,8 @@ int Field::move_down(WINDOW* win)
 {
 	print_del_obj(win);
 
-	move(0, 25);
-	printw("y_obj:%d x_obj%d", y_obj, x_obj);
+	//move(0, 25);
+	//printw("y_obj:%d x_obj%d", y_obj, x_obj);
 
 	if (!check_down(win)) {
 		figure.move_y(win, 1);
@@ -159,37 +131,6 @@ int Field::check_down(WINDOW* win)
 	}
 	return 0;
 }
-
-/*void Field::rotate(WINDOW* win)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		
-	}
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Field::check_all_line_matrix()
 {
@@ -249,13 +190,13 @@ void Field::swap_elem(int y_line, int x_column)
 
 void Field::print_field(WINDOW* win)
 {
-	int y_matr = coord_y_scr, x_matr = 0;
+	//int y_matr = coord_y_scr, x_matr = 0;
 	for (int i = 1; i < line - 1; i++)
 	{
 		for (int j = 1; j < column - 1; j++)
 		{
-			move(i + y_matr, j + x_matr);
-			printw("%c", field[i][j]);
+			//move(i + y_matr, j + x_matr);
+			//printw("%c", field[i][j]);
 			mvwaddch(win, i, j, field[i][j]);
 		}
 	}
@@ -269,7 +210,7 @@ void Field::print_obj(WINDOW* win)
 int Field::print_new_obj(WINDOW* win)
 {
 	int x, y;
-	figure.get_figure(win);
+	figure.get_new_figure(win);
 	for (int i = 0; i < 4; i++) {
 		y = figure.get_y(i);
 		x = figure.get_x(i);
@@ -282,7 +223,7 @@ int Field::print_new_obj(WINDOW* win)
 
 void Field::print_del_obj(WINDOW* win)
 {
-	figure.delete_fig(win);
+	figure.delete_figure(win);
 }
 
 #endif

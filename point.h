@@ -1,30 +1,22 @@
 #ifndef Point_H
 #define Point_H
 
-#include <iostream>
 #include <cstdlib>
 
 using namespace std;
 
 class Point
 {
+protected:
 	struct point
 	{
 		int x;
 		int y;
-	};
-	point *p;
+	} p[4];
 public:
-	void set_point(int, int);
 	int get_x();
 	int get_y();
 };
-
-void Point::set_point(int x_fig, int y_fig)
-{
-	p->x = x_fig;
-	p->y = y_fig;
-}
 
 int Point::get_x() {return p->x;}
 

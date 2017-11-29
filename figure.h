@@ -1,9 +1,9 @@
 #ifndef FIGURE_H
 #define FIGURE_H
 
-#include <iostream>
 #include <cstdlib>
-//#include "point.h"
+#include <ncurses.h>
+#include "point.h"
 
 using namespace std;
 
@@ -60,32 +60,24 @@ class Figure
 		int y;
 	} p[4];
 public:
-	void get_figure(WINDOW*);
-	//int get_index(int);
+	void get_new_figure(WINDOW*);
 
 	void move_x(WINDOW*, int);
 	void move_y(WINDOW*, int);
-	void rotate(WINDOW*);
 
 	void print_figure(WINDOW*);
-	void delete_fig(WINDOW*);
+	void delete_figure(WINDOW*);
 
 	int get_y(int);
 	int get_x(int);
 };
 
-void Figure::get_figure(WINDOW *win)
+void Figure::get_new_figure(WINDOW *win)
 {
 	srand(time(0));
 	int num = rand() % 7;
 	int pol = rand() % 4;
 
-	/*for (int i = 0; i < 4; i++, num += 2)
-	{
-		p[i].x = obj[num] + 10;
-		p[i].y = obj[num + 1] + 1;
-		mvwaddch(win, p[i].y, p[i].x, '$');
-	}*/
 	for (int i = 0; i < 4; i++)
 	{
 		p[i].x = obj[num][pol][i][0] + 10;
@@ -97,8 +89,6 @@ void Figure::get_figure(WINDOW *win)
 int Figure::get_y(int num_point) {return p[num_point].y;}
 
 int Figure::get_x(int num_point) {return p[num_point].x;}
-
-//int Figure::get_index(int num_fig) {return num_fig * 7 + num_fig;}
 
 void Figure::move_x(WINDOW* win, int x)
 {
@@ -116,32 +106,17 @@ void Figure::move_y(WINDOW* win, int y)
 	}
 }
 
-/*void Figure::rotate()
-{
-
-}*/
-
-
-
-
-
-
-
-
-
-
-
 void Figure::print_figure(WINDOW *win)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		move(i, 0);
-		printw("x%d, y%d", p[i].x, p[i].y);
+		//move(i, 0);
+		//printw("x%d, y%d", p[i].x, p[i].y);
 		mvwaddch(win, p[i].y, p[i].x, '$');
 	}
 }
 
-void Figure::delete_fig(WINDOW* win)
+void Figure::delete_figure(WINDOW* win)
 {
 	for (int i = 0; i < 4; i++) {
 		mvwaddch(win, p[i].y, p[i].x, ' ');

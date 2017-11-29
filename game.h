@@ -1,13 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-// /#include <iostream>
-#include <ncurses.h>
-#include <cstdlib>
 #include <ctime> 
 #include "field.h"
-
-using namespace std;
 
 class Game
 {
@@ -21,7 +16,7 @@ public:
 	void start_game();
 	void render_window();
 	int key_processing(int);
-	void test();
+	void end();
 };
 
 Game::Game()
@@ -61,7 +56,7 @@ void Game::start_game()
 		if ((clock() - time_down) >= (float)time) {
 			time_down = clock();
 			if (field.move_down(win)) {
-				mvwprintw(win, field.get_column_win() / 2, 6, "Game over");
+				mvprintw(5, 25, "Game over");
 				render_window();
 				return;
 			}
@@ -78,16 +73,13 @@ int Game::key_processing(int key)
 {
 	switch(key)
 	{
-		case KEY_UP:
-			//field.rotate(win);
-			break;
 		case KEY_DOWN:
 			return 1;
 		case KEY_RIGHT:
-			field.key_right(win);
+			field.move_x(win, 1);
 			break;
 		case KEY_LEFT:
-			field.key_left(win);
+			field.move_x(win, -1);
 			break;
 		default:
 			break;
@@ -95,10 +87,10 @@ int Game::key_processing(int key)
 	return 0;
 }
 
-void Game::test()
+void Game::end()
 {
 	while((key = getch()) != 27) {
-		mvprintw(0, 0, "Input Esc for exit");
+		mvprintw(10, 25, "Input Esc for exit");
 		wrefresh(win);
 	}
 }
